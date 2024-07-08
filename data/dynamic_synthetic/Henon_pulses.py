@@ -6,24 +6,42 @@ from scipy import signal
 ############## Henon-Henon Temporal Attractors  ################
 ################################################################
 
-
+@njit
 def generate_henon03_henon03_temporal_coupling(couplingx, couplingy, length_vars, discard, init_cond):
     variables = np.empty((length_vars, 4))
 
     variables[0, :] = init_cond
 
-    for ii in range(length_vars - 1):
-        variables[ii + 1, 0] = 1.4 - (couplingx[ii] * variables[ii, 0] * variables[ii, 2] \
-                                      + (1 - couplingx[ii]) * variables[ii, 0] ** 2) + 0.3 * variables[ii, 1]
-        variables[ii + 1, 1] = variables[ii, 0]
+    # Precompute constants
+    one_minus_couplingx = 1 - couplingx
+    one_minus_couplingy = 1 - couplingy
 
-        variables[ii + 1, 2] = 1.4 - (couplingy[ii] * variables[ii, 0] * variables[ii, 2] \
-                                      + (1 - couplingy[ii]) * variables[ii, 2] ** 2) + 0.3 * variables[ii, 3]
-        variables[ii + 1, 3] = variables[ii, 2]
+    for ii in range(length_vars - 1):
+        var0 = variables[ii, 0]
+        var1 = variables[ii, 1]
+        var2 = variables[ii, 2]
+        var3 = variables[ii, 3]
+
+        # Update variables with precomputed constants
+        variables[ii + 1, 0] = 1.4 - (couplingx[ii] * var0 * var2 + one_minus_couplingx[ii] * var0 ** 2) + 0.3 * var1
+        variables[ii + 1, 1] = var0
+        variables[ii + 1, 2] = 1.4 - (couplingy[ii] * var0 * var2 + one_minus_couplingy[ii] * var2 ** 2) + 0.3 * var3
+        variables[ii + 1, 3] = var2
+
+    return variables[discard:]
+    
+    #for ii in range(length_vars - 1):
+    #    variables[ii + 1, 0] = 1.4 - (couplingx[ii] * variables[ii, 0] * variables[ii, 2] \
+    #                                  + (1 - couplingx[ii]) * variables[ii, 0] ** 2) + 0.3 * variables[ii, 1]
+    #    variables[ii + 1, 1] = variables[ii, 0]
+    #
+    #    variables[ii + 1, 2] = 1.4 - (couplingy[ii] * variables[ii, 0] * variables[ii, 2] \
+    #                                  + (1 - couplingy[ii]) * variables[ii, 2] ** 2) + 0.3 * variables[ii, 3]
+    #    variables[ii + 1, 3] = variables[ii, 2]
 
     return variables[discard:]
 
-def on_off_alternating(length_vars, discard, coupling_constant, init_cond):
+def on_off_alternating(length_vars, discard, coupling_constant, init_cond=None):
 
     """
     Generates a variable series with an on-off-on pattern based on temporal coupling in a Henon map.
@@ -42,12 +60,12 @@ def on_off_alternating(length_vars, discard, coupling_constant, init_cond):
         init_cond = [0.7, 0, 0.7, 0]
 
     # Generate Variables
-    couplingx = np.zeros((length_vars))
-    t = np.linspace(0, 1, length_vars-discard)
+    couplingx = np.zeros(length_vars)
+    t = np.linspace(0, 1, length_vars - discard)
     pulse_func = signal.square(2 * np.pi * 1.49 * t)
-    pulse_func[pulse_func<=0] = 0
-    pulse_func = np.concatenate((np.ones((discard)), pulse_func))    
-    couplingy = pulse_func*coupling_constant
+    pulse_func[pulse_func <= 0] = 0
+    pulse_func = np.concatenate((np.ones(discard), pulse_func))
+    couplingy = pulse_func * coupling_constant
 
     variables = generate_henon03_henon03_temporal_coupling(couplingx, couplingy, 
                     length_vars, discard, init_cond)
