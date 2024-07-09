@@ -469,7 +469,7 @@ def temporal_bidirectional_model_boot_plot(model_parameters, variables):
         load_and_plot_bidirectional_scores(models_folder, model_parameters)
         
 def perform_bidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
-    """ Handles the bootstrapping process. """
+    # Handles the bootstrapping process
     
     window_len = model_parameters['window_len']
     
