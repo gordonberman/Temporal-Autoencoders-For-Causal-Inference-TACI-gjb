@@ -61,7 +61,7 @@ def on_off_alternating(length_vars, discard, coupling_constant, init_cond=None):
         init_cond = [0.7, 0, 0.7, 0]
 
     # Generate Variables
-    couplingx = np.zeros(length_vars)
+    couplingx = np.zeros(length_vars, dtype=np.float64)
     t = np.linspace(0, 1, length_vars - discard)
     pulse_func = signal.square(2 * np.pi * 1.49 * t)
     pulse_func[pulse_func <= 0] = 0
