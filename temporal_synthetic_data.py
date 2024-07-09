@@ -240,9 +240,8 @@ def temporal_unidirectional_model_boot_plot(model_parameters, variables):
 #
 #    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
 
-
 def perform_unidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
-    """ Handles the bootstrapping process. """
+    """Handles the bootstrapping process."""
     
     window_len = model_parameters['window_len']
     
@@ -280,6 +279,7 @@ def perform_unidirectional_bootstrapping(base_folder, models_folder, model_param
         np.save(filename, score_boot_std)
 
     plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
+
 
 def load_and_plot_unidirectional_scores(models_folder, model_parameters):
     
