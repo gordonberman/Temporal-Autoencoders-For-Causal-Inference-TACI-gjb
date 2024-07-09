@@ -9,6 +9,9 @@ from tcn import tcn
 import tensorflow as tf
 from sklearn.metrics import r2_score
 
+import glob
+from joblib import Parallel, delayed
+
 try:
     from utilities.utils import create_datasets, generate_fourier_surrogate
     from utilities.utils import load_unidirectional_models, load_bidirectional_models, bootstrap_scores
@@ -155,6 +158,7 @@ def temporal_unidirectional_handler(model_parameters, variables):
         print('Models found')
         print('Loading ...')
 
+
 def temporal_unidirectional_model_boot_plot(model_parameters, variables):
     """
     Executes bootstrapped evaluations for synthetic models and generates plots of comparative scores
@@ -192,8 +196,52 @@ def temporal_unidirectional_model_boot_plot(model_parameters, variables):
     else:
         print('Loading Scores ... \n')
         load_and_plot_unidirectional_scores(models_folder, model_parameters)
-        
+
+
 def perform_unidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
+    """ Handles the bootstrapping process. """
+
+    window_len = model_parameters['window_len']
+
+    filelist = glob.glob(os.path.join(base_folder, "*.hdf5"))
+
+    if len(filelist) != 2:
+        return  # Early exit if models are not fully saved
+    else:
+        model_YXY, model_YXYP = load_unidirectional_models(base_folder)
+        testX, testX_, testY, testY_, testX_sff, testY_sff, full_data_trackerX_ = prepare_datasets(model_parameters, variables)
+
+        if window_len > len(testX_):
+            window_len = len(testX_)
+
+        intervals = np.zeros((len(testX_) // window_len))
+
+        def process_interval(ii):
+            interval = np.arange(ii * window_len, (ii + 1) * window_len)
+            intervals[ii] = np.squeeze(full_data_trackerX_[interval]).flatten()[-1]
+
+            # Bootstraps X to Y                
+            scores = bootstrap_scores(model_parameters, testY[interval], testX_sff[interval], testY_[interval], model_YXY, model_YXYP)
+            return np.mean(scores), np.std(scores)
+
+        results = Parallel(n_jobs=-1)(delayed(process_interval)(ii) for ii in range(len(testX_) // window_len))
+
+        score_boot_mean, score_boot_std = zip(*results)
+        score_boot_mean = np.array(score_boot_mean)
+        score_boot_std = np.array(score_boot_std)
+
+        # Save Scores
+        filename = os.path.join(models_folder, 'intervals.npy')
+        np.save(filename, intervals)
+        filename = os.path.join(models_folder, 'score_boot_mean.npy')
+        np.save(filename, score_boot_mean)
+        filename = os.path.join(models_folder, 'score_boot_std.npy')
+        np.save(filename, score_boot_std)
+
+    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
+
+
+"""def perform_unidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
     """ Handles the bootstrapping process. """
     
     window_len = model_parameters['window_len']
@@ -231,7 +279,7 @@ def perform_unidirectional_bootstrapping(base_folder, models_folder, model_param
         filename = models_folder + 'score_boot_std.npy'
         np.save(filename, score_boot_std)
 
-    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
+    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)"""
 
 def load_and_plot_unidirectional_scores(models_folder, model_parameters):
     
