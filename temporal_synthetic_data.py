@@ -279,7 +279,7 @@ def perform_unidirectional_bootstrapping(base_folder, models_folder, model_param
         filename = models_folder + 'score_boot_std.npy'
         np.save(filename, score_boot_std)
 
-    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)"""
+    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
 
 def load_and_plot_unidirectional_scores(models_folder, model_parameters):
     
