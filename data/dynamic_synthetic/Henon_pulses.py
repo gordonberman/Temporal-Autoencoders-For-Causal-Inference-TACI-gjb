@@ -40,7 +40,7 @@ def generate_henon03_henon03_temporal_coupling(couplingx, couplingy, length_vars
     #                                  + (1 - couplingy[ii]) * variables[ii, 2] ** 2) + 0.3 * variables[ii, 3]
     #    variables[ii + 1, 3] = variables[ii, 2]
 
-    return variables[discard:]
+    #return variables[discard:]
 
 def on_off_alternating(length_vars, discard, coupling_constant, init_cond=None):
 
@@ -58,7 +58,9 @@ def on_off_alternating(length_vars, discard, coupling_constant, init_cond=None):
     """
 
     if init_cond is None:
-        init_cond = [0.7, 0, 0.7, 0]
+        init_cond = np.array([0.7, 0, 0.7, 0], dtype=np.float64)
+    else:
+        init_cond = np.array(init_cond, dtype=np.float64)
 
     # Generate Variables
     couplingx = np.zeros(length_vars, dtype=np.float64)
@@ -68,16 +70,14 @@ def on_off_alternating(length_vars, discard, coupling_constant, init_cond=None):
     pulse_func = np.concatenate((np.ones(discard), pulse_func))
     couplingy = pulse_func * coupling_constant
 
-    variables = generate_henon03_henon03_temporal_coupling(couplingx, couplingy, 
-                    length_vars, discard, init_cond)
+    variables = generate_henon03_henon03_temporal_coupling(couplingx, couplingy, length_vars, discard, init_cond)
 
     np.random.seed(0)
     while np.isnan(variables).any():
         init_cond_ = np.random.random(4)
-        variables = generate_henon03_henon03_temporal_coupling(couplingx, couplingy, 
-                    length_vars, discard, init_cond)
+        variables = generate_henon03_henon03_temporal_coupling(couplingx, couplingy, length_vars, discard, init_cond)
         
-    return variables, couplingx, couplingy        
+    return variables, couplingx, couplingy
 
 def on_off_widths(length_vars, discard, coupling_constant, init_cond):
 
