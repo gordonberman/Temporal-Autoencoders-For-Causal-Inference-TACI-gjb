@@ -241,45 +241,45 @@ def perform_unidirectional_bootstrapping(base_folder, models_folder, model_param
     plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)
 
 
-"""def perform_unidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
-    """ Handles the bootstrapping process. """
-    
-    window_len = model_parameters['window_len']
-    
-    filelist = glob.glob(os.path.join(base_folder, "*.hdf5"))
-    
-    if len(filelist) != 2:
-        return  # Early exit if models are not fully saved
-    else:
-        model_YXY, model_YXYP = load_unidirectional_models(base_folder)
-        testX, testX_, testY, testY_, testX_sff, testY_sff, full_data_trackerX_ = prepare_datasets(model_parameters, variables)
-        
-        if window_len > len(testX_):
-            window_len = len(testX_)
-        
-        score_boot_mean = np.zeros((len(testX_) // window_len))
-        score_boot_std = np.zeros((len(testX_) // window_len))
-        intervals = np.zeros((len(testX_) // window_len))
-
-        for ii in range(len(testX_) // window_len):
-
-            interval = np.arange(ii * window_len, (ii + 1) * window_len)
-            intervals[ii] = np.squeeze(full_data_trackerX_[interval]).flatten()[-1]
-    
-            ### Bootstraps X to Y ###                
-            scores = bootstrap_scores(model_parameters, testY[interval], testX_sff[interval], testY_[interval], model_YXY, model_YXYP)
-            score_boot_mean[ii] = np.mean(scores)
-            score_boot_std[ii] = np.std(scores)
-
-        # Save Scores
-        filename = models_folder + 'intervals.npy'
-        np.save(filename, intervals)
-        filename = models_folder + 'score_boot_mean.npy'
-        np.save(filename, score_boot_mean)
-        filename = models_folder + 'score_boot_std.npy'
-        np.save(filename, score_boot_std)
-
-    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)"""
+#def perform_unidirectional_bootstrapping(base_folder, models_folder, model_parameters, variables):
+#    """ Handles the bootstrapping process. """
+#    
+#    window_len = model_parameters['window_len']
+#    
+#    filelist = glob.glob(os.path.join(base_folder, "*.hdf5"))
+#    
+#    if len(filelist) != 2:
+#        return  # Early exit if models are not fully saved
+#    else:
+#        model_YXY, model_YXYP = load_unidirectional_models(base_folder)
+#        testX, testX_, testY, testY_, testX_sff, testY_sff, full_data_trackerX_ = prepare_datasets(model_parameters, variables)
+#        
+#        if window_len > len(testX_):
+#            window_len = len(testX_)
+#        
+#        score_boot_mean = np.zeros((len(testX_) // window_len))
+#        score_boot_std = np.zeros((len(testX_) // window_len))
+#        intervals = np.zeros((len(testX_) // window_len))
+#
+#        for ii in range(len(testX_) // window_len):
+#
+#            interval = np.arange(ii * window_len, (ii + 1) * window_len)
+#            intervals[ii] = np.squeeze(full_data_trackerX_[interval]).flatten()[-1]
+#    
+#            ### Bootstraps X to Y ###                
+#            scores = bootstrap_scores(model_parameters, testY[interval], testX_sff[interval], testY_[interval], model_YXY, model_YXYP)
+#            score_boot_mean[ii] = np.mean(scores)
+#            score_boot_std[ii] = np.std(scores)
+#
+#        # Save Scores
+#        filename = models_folder + 'intervals.npy'
+#        np.save(filename, intervals)
+#        filename = models_folder + 'score_boot_mean.npy'
+#        np.save(filename, score_boot_mean)
+#        filename = models_folder + 'score_boot_std.npy'
+#        np.save(filename, score_boot_std)
+#
+#    plot_unidirectional_scores(models_folder, model_parameters, intervals, score_boot_mean, score_boot_std)"""
 
 def load_and_plot_unidirectional_scores(models_folder, model_parameters):
     
