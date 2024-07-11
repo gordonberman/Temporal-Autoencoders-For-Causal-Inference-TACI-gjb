@@ -14,7 +14,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 def predictability_full(parameters, filenameX, filenameXP, 
                         full_dataX, full_dataX_, full_dataX_sff, 
                         full_dataY, full_dataY_, full_dataY_sff, save_plot='',
-                        bottleneck_XYX_filename,bottleneck_XYXP_filename):
+                        bottleneck_XYX_filename='',bottleneck_XYXP_filename=''):
 
     '''
     Purpose:
@@ -199,7 +199,7 @@ def predictability_full(parameters, filenameX, filenameXP,
 
 
 def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, trainX_, valX_,
-                   trainY, valY, trainY_sff, valY_sff, save_plot='',bottleneck_XYX_filename,bottleneck_XYXP_filename):
+                   trainY, valY, trainY_sff, valY_sff, save_plot='',bottleneck_XYX_filename='',bottleneck_XYXP_filename=''):
 
     '''
     Purpose:
