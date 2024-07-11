@@ -146,12 +146,14 @@ def temporal_unidirectional_handler(model_parameters, variables):
         filenameY = models_folder + 'auto_encoder_model_YXY.hdf5'
         filenameYP = models_folder + 'auto_encoder_model_YXYP.hdf5'
         plot_nameY = models_folder + 'X to Y training and validation.png'
+        filenameYbottleneck = models_folder + 'bottleneck_model_YXY.hdf5'
+        filenameYPbottleneck = models_folder + 'bottleneck_model_YXYP.hdf5'
 
         # ##############  X to Y  ##############
         auto_encoder_model_YXY, auto_encoder_model_YXYP,bottleneck_model_YXY,bottleneck_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
                                                                             full_dataY, full_dataY_, full_dataY_sff,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
-                                                                            save_plot=plot_nameY)
+                                                                            save_plot=plot_nameY,filenameYbottleneck,filenameYPbottleneck)
         
         print('Training Done')
     else:
@@ -410,6 +412,11 @@ def temporal_bidirectional_handler(model_parameters, variables):
         filenameXP = models_folder + 'auto_encoder_model_XYXP.hdf5'
         filenameY = models_folder + 'auto_encoder_model_YXY.hdf5'
         filenameYP = models_folder + 'auto_encoder_model_YXYP.hdf5'
+        filenameYbottleneck = models_folder + 'bottleneck_model_YXY.hdf5'
+        filenameYPbottleneck = models_folder + 'bottleneck_model_YXYP.hdf5'
+        filenameXbottleneck = models_folder + 'bottleneck_model_XYX.hdf5'
+        filenameXPbottleneck = models_folder + 'bottleneck_model_XYXP.hdf5'
+        
         plot_nameX = models_folder + 'Y to X training and validation.png'
         plot_nameY = models_folder + 'X to Y training and validation.png'
 
@@ -417,13 +424,13 @@ def temporal_bidirectional_handler(model_parameters, variables):
         auto_encoder_model_XYX, auto_encoder_model_XYXP,bottleneck_model_XYX,bottleneck_model_XYXP = predictability_full(model_parameters, filenameX, filenameXP,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
                                                                             full_dataY, full_dataY_, full_dataY_sff,
-                                                                            save_plot=plot_nameX)
+                                                                            save_plot=plot_nameX,filenameXbottleneck,filenameXPbottleneck)
 
         # ##############  X to Y  ##############
         auto_encoder_model_YXY, auto_encoder_model_YXYP,bottleneck_model_YXY,bottleneck_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
                                                                             full_dataY, full_dataY_, full_dataY_sff,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
-                                                                            save_plot=plot_nameY)
+                                                                            save_plot=plot_nameY,filenameYbottleneck,filenameYPbottleneck)
 
         print('Training Done')
     else:
