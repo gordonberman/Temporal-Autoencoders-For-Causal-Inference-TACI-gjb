@@ -61,10 +61,12 @@ def predictability_full(parameters, filenameX, filenameXP,
     encoder_input_X = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
     encoder_input_Y = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
 
+    bottleneck_output_XYX = bottleneck_XYX([encoder_XX([encoder_input_X]), encoder_YX([encoder_input_Y])])
+    decoder_output = decoder_XYX(bottleneck_output_XYX)
+                            
     # Compile Autoencoder
     auto_encoder_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y],
-                                   outputs=decoder_XYX(
-                                       bottleneck_XYX([encoder_XX([encoder_input_X]), encoder_YX([encoder_input_Y])])),
+                                   outputs=decoder_output,
                                    name='AutoEncoder_XYX')
     auto_encoder_model_XYX.compile(loss=parameters['loss_funct'], optimizer='Adam', metrics=parameters['loss_funct'])
 
@@ -79,6 +81,8 @@ def predictability_full(parameters, filenameX, filenameXP,
                                             callbacks=[checkpoint, early_stopping, reduce_lr],
                                             verbose=parameters['verbose'])
 
+    bottleneck_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYX)
+                           
     ##################################### XY to X updated #####################################
 
     if parameters['encoder_type'] == 0:
@@ -141,11 +145,13 @@ def predictability_full(parameters, filenameX, filenameXP,
     encoder_input_X = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
     encoder_input_Y = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
 
+    bottleneck_output_XYXP = bottleneck_XYXP([encoder_XXP([encoder_input_X]), encoder_YXP([encoder_input_Y])])
+    decoder_output = decoder_XYXP(bottleneck_output_XYXP)    
+                            
     # Compile Autoencoder
     auto_encoder_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y],
-                                    outputs=decoder_XYXP(bottleneck_XYXP(
-                                        [encoder_XXP([encoder_input_X]), encoder_YXP([encoder_input_Y])])),
-                                    name='AutoEncoder_XYXP')
+                                   outputs=decoder_output,
+                                   name='AutoEncoder_XYXP')
     auto_encoder_model_XYXP.compile(loss=parameters['loss_funct'], optimizer='Adam', metrics=parameters['loss_funct'])
 
     # print("\n> Starting Training XYX ...")
@@ -159,6 +165,9 @@ def predictability_full(parameters, filenameX, filenameXP,
                                               shuffle=parameters['shuffle'], use_multiprocessing=True,
                                               callbacks=[checkpoint, early_stopping, reduce_lr],
                                               verbose=parameters['verbose'])
+
+    bottleneck_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYXP)
+
 
     fig = plt.figure(figsize=(20, 5))
     gs = plt.GridSpec(1, 2, figure=fig)
@@ -184,7 +193,7 @@ def predictability_full(parameters, filenameX, filenameXP,
     else:
         plt.close(fig)
 
-    return auto_encoder_model_XYX, auto_encoder_model_XYXP
+    return auto_encoder_model_XYX, auto_encoder_model_XYXP, bottleneck_model_XYX, bottleneck_model_XYXP
 
 
 def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, trainX_, valX_,
@@ -236,11 +245,14 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
     encoder_input_X = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
     encoder_input_Y = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
 
+    bottleneck_output_XYX = bottleneck_XYX([encoder_XX([encoder_input_X]), encoder_YX([encoder_input_Y])])
+    decoder_output = decoder_XYX(bottleneck_output_XYX)
+                       
     # Compile Autoencoder
     auto_encoder_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y],
-                                   outputs=decoder_XYX(
-                                       bottleneck_XYX([encoder_XX([encoder_input_X]), encoder_YX([encoder_input_Y])])),
+                                   outputs=decoder_output,
                                    name='AutoEncoder_XYX')
+                       
     auto_encoder_model_XYX.compile(loss=parameters['loss_funct'], optimizer='Adam', metrics=parameters['loss_funct'])
 
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=1e-7, verbose=parameters['verbose'], mode='min')
@@ -253,7 +265,9 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
                                             shuffle=parameters['shuffle'], use_multiprocessing=True,
                                             callbacks=[checkpoint, early_stopping, reduce_lr],
                                             verbose=parameters['verbose'])
-
+                       
+    bottleneck_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYX)
+                       
     ##################################### XY to X updated #####################################
 
     if parameters['encoder_type'] == 0:
@@ -318,11 +332,14 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
     encoder_input_X = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
     encoder_input_Y = Input(batch_shape=(None, parameters['seq_length'], parameters['ts_dimension']))
 
+    bottleneck_output_XYXP = bottleneck_XYXP([encoder_XX([encoder_input_X]), encoder_YX([encoder_input_Y])])
+    decoder_output = decoder_XYXP(bottleneck_output_XYXP)
+                       
     # Compile Autoencoder
     auto_encoder_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y],
-                                    outputs=decoder_XYXP(bottleneck_XYXP(
-                                        [encoder_XXP([encoder_input_X]), encoder_YXP([encoder_input_Y])])),
-                                    name='AutoEncoder_XYXP')
+                                   outputs=decoder_output,
+                                   name='AutoEncoder_XYXP')
+                       
     auto_encoder_model_XYXP.compile(loss=parameters['loss_funct'], optimizer='Adam', metrics=parameters['loss_funct'])
 
     # print("\n> Starting Training XYX ...")
@@ -337,6 +354,8 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
                                               callbacks=[checkpoint, early_stopping, reduce_lr],
                                               verbose=parameters['verbose'])
 
+    bottleneck_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYXP)
+                       
     fig = plt.figure(figsize=(20, 5))
     gs = plt.GridSpec(1, 2, figure=fig)
 
@@ -365,4 +384,4 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
     else:
         plt.close(fig)
 
-    return auto_encoder_model_XYX, auto_encoder_model_XYXP
+    return auto_encoder_model_XYX, auto_encoder_model_XYXP, bottleneck_model_XYX, bottleneck_model_XYXP
