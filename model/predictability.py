@@ -13,7 +13,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 def predictability_full(parameters, filenameX, filenameXP, 
                         full_dataX, full_dataX_, full_dataX_sff, 
-                        full_dataY, full_dataY_, full_dataY_sff, save_plot=''):
+                        full_dataY, full_dataY_, full_dataY_sff, save_plot='',
+                        bottleneck_XYX_filename,bottleneck_XYXP_filename):
 
     '''
     Purpose:
@@ -82,6 +83,7 @@ def predictability_full(parameters, filenameX, filenameXP,
                                             verbose=parameters['verbose'])
 
     bottleneck_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYX)
+    bottleneck_model_XYX.save(bottleneck_XYX_filename)
                            
     ##################################### XY to X updated #####################################
 
@@ -167,7 +169,7 @@ def predictability_full(parameters, filenameX, filenameXP,
                                               verbose=parameters['verbose'])
 
     bottleneck_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYXP)
-
+    bottleneck_model_XYXP.save(bottleneck_XYXP_filename)
 
     fig = plt.figure(figsize=(20, 5))
     gs = plt.GridSpec(1, 2, figure=fig)
@@ -197,7 +199,7 @@ def predictability_full(parameters, filenameX, filenameXP,
 
 
 def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, trainX_, valX_,
-                   trainY, valY, trainY_sff, valY_sff, save_plot=''):
+                   trainY, valY, trainY_sff, valY_sff, save_plot='',bottleneck_XYX_filename,bottleneck_XYXP_filename):
 
     '''
     Purpose:
@@ -267,6 +269,7 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
                                             verbose=parameters['verbose'])
                        
     bottleneck_model_XYX = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYX)
+    bottleneck_model_XYX.save(bottleneck_XYX_filename)                 
                        
     ##################################### XY to X updated #####################################
 
@@ -355,6 +358,7 @@ def predictability_val_split(parameters, filenameX, filenameXP, trainX, valX, tr
                                               verbose=parameters['verbose'])
 
     bottleneck_model_XYXP = Model(inputs=[encoder_input_X, encoder_input_Y], outputs=bottleneck_output_XYXP)
+    bottleneck_model_XYXP.save(bottleneck_XYXP_filename)
                        
     fig = plt.figure(figsize=(20, 5))
     gs = plt.GridSpec(1, 2, figure=fig)
