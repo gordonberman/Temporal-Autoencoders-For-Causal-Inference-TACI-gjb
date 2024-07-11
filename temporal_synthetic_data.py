@@ -148,7 +148,7 @@ def temporal_unidirectional_handler(model_parameters, variables):
         plot_nameY = models_folder + 'X to Y training and validation.png'
 
         # ##############  X to Y  ##############
-        auto_encoder_model_YXY, auto_encoder_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
+        auto_encoder_model_YXY, auto_encoder_model_YXYP,bottleneck_model_YXY,bottleneck_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
                                                                             full_dataY, full_dataY_, full_dataY_sff,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
                                                                             save_plot=plot_nameY)
@@ -414,13 +414,13 @@ def temporal_bidirectional_handler(model_parameters, variables):
         plot_nameY = models_folder + 'X to Y training and validation.png'
 
         ##############  Y to X  ##############
-        auto_encoder_model_XYX, auto_encoder_model_XYXP = predictability_full(model_parameters, filenameX, filenameXP,
+        auto_encoder_model_XYX, auto_encoder_model_XYXP,bottleneck_model_XYX,bottleneck_model_XYXP = predictability_full(model_parameters, filenameX, filenameXP,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
                                                                             full_dataY, full_dataY_, full_dataY_sff,
                                                                             save_plot=plot_nameX)
 
         # ##############  X to Y  ##############
-        auto_encoder_model_YXY, auto_encoder_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
+        auto_encoder_model_YXY, auto_encoder_model_YXYP,bottleneck_model_YXY,bottleneck_model_YXYP = predictability_full(model_parameters, filenameY, filenameYP,
                                                                             full_dataY, full_dataY_, full_dataY_sff,
                                                                             full_dataX, full_dataX_, full_dataX_sff, 
                                                                             save_plot=plot_nameY)
